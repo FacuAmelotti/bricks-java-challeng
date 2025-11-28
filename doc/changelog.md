@@ -144,12 +144,24 @@ POST /product/import/electronics
 
 ---
 
-## [0.6.0] - *(pendiente)*
+## [0.6.0] - 2025-11-28
 ### Cache
-- Implementación de cache para listados.
-- Invalidación selectiva al crear/editar/eliminar productos.
-- Configuración con `@Cacheable`, `@CacheEvict`, `@CachePut`.
+- Activación del sistema de caché en Spring Boot mediante @EnableCaching.
+- Implementación de caché para mejorar el rendimiento del endpoint:
+  GET /api/products ahora usa @Cacheable("products").
+- Invalidación automática del caché cuando cambia el estado de los productos:
+  - @CacheEvict(value = "products", allEntries = true) aplicado en:
+    - create()
+    - update()
+    - delete()
+- Garantiza que los datos en caché nunca queden obsoletos tras operaciones de escritura.
+- Pruebas manuales exitosas verificando:
+  - Primera llamada → hit a la base.
+  - Llamadas posteriores → respuesta desde caché.
+  - Cada creación/actualización/eliminación → vacía el caché y fuerza regeneración.
+- Proyecto sigue compilando correctamente (./gradlew clean test OK).
 
+- !!! Revisar cache con postman
 ---
 
 ## [0.7.0] - *(pendiente)*

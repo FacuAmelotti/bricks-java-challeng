@@ -8,13 +8,16 @@ import com.bricks.challenge.entity.Product;
 import com.bricks.challenge.exception.ResourceNotFoundException;
 import com.bricks.challenge.mapper.ProductMapper;
 import com.bricks.challenge.repository.ProductRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+
 @Service
-@Transactional
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -30,18 +33,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse create(ProductRequest request) {
-        // 1) Buscar categoría (si no existe, lanza ResourceNotFoundException)
-        Category category = categoryService.getCategoryEntityById(request.getCategoryId());
+    @Transactional(readOnly = true)
+    @Cacheable(value = "products", key = "'all'")
+    public List<ProductResponse> findAll(ProductFilter filter) {
+        List<Product> products;
 
-        // 2) Mapear request -> entidad
-        Product product = productMapper.toEntity(request, category);
+        if (filter == null) {
+            products = productRepository.findAll();
+        } else {
+            // Filtro básico: por rango de precio y/o categoría
+            BigDecimal minPrice = filter.getMinPrice();
+            BigDecimal maxPrice = filter.getMaxPrice();
+            Long categoryId = filter.getCategoryId();
 
-        // 3) Guardar en DB
-        Product saved = productRepository.save(product);
+            // Por simplicidad para el challenge: si hay filtros,
+            // ahora mismo usamos findAll() y luego filtramos en memoria.
+            // En una versión más avanzada se podría crear queries específicas.
+            products = productRepository.findAll().stream()
+                    .filter(p -> {
+                        boolean ok = true;
 
-        // 4) Mapear a response
-        return productMapper.toResponse(saved);
+                        if (minPrice != null) {
+                            ok = ok && p.getPrice().compareTo(minPrice) >= 0;
+                        }
+                        if (maxPrice != null) {
+                            ok = ok && p.getPrice().compareTo(maxPrice) <= 0;
+                        }
+                        if (categoryId != null && p.getCategory() != null) {
+                            ok = ok && categoryId.equals(p.getCategory().getId());
+                        }
+
+                        return ok;
+                    })
+                    .toList();
+        }
+
+        return products.stream()
+                .map(productMapper::toResponse)
+                .toList();
     }
 
     @Override
@@ -49,45 +78,50 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse findById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found with id: " + id));
+                        new ResourceNotFoundException("Product with id " + id + " not found"));
+
         return productMapper.toResponse(product);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ProductResponse> findAll(ProductFilter filter) {
-        // Más adelante podemos usar ProductFilter para agregar filtros avanzados.
-        return productRepository.findAll()
-                .stream()
-                .map(productMapper::toResponse)
-                .toList();
+    @Transactional
+    @CacheEvict(value = "products", key = "'all'")
+    public ProductResponse create(ProductRequest request) {
+        Category category = categoryService.getEntityById(request.getCategoryId());
+
+        Product product = productMapper.toEntity(request, category);
+        Product saved = productRepository.save(product);
+
+        return productMapper.toResponse(saved);
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "products", key = "'all'")
     public ProductResponse update(Long id, ProductRequest request) {
         Product existing = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found with id: " + id));
+                        new ResourceNotFoundException("Product with id " + id + " not found"));
+
+        Category category = categoryService.getEntityById(request.getCategoryId());
 
         existing.setName(request.getName());
         existing.setPrice(request.getPrice());
         existing.setStock(request.getStock());
-
-        if (request.getCategoryId() != null) {
-            Category category = categoryService.getCategoryEntityById(request.getCategoryId());
-            existing.setCategory(category);
-        }
+        existing.setCategory(category);
 
         Product updated = productRepository.save(existing);
         return productMapper.toResponse(updated);
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "products", key = "'all'")
     public void delete(Long id) {
-        Product product = productRepository.findById(id)
+        Product existing = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found with id: " + id));
+                        new ResourceNotFoundException("Product with id " + id + " not found"));
 
-        productRepository.delete(product);
+        productRepository.delete(existing);
     }
 }
