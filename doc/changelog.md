@@ -38,14 +38,27 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 
 ---
 
-## [0.2.0] - *(pendiente)*
-### Entidades + Repositorios (próximo paso)
-- Creación de `Category` y `Product` como entidades JPA.
-- Declaración de relaciones (`@ManyToOne` / `@OneToMany`).
-- Generación de repositorios con Spring Data:
+## [0.2.0] - 2025-11-28  
+### Entidades + DTOs + Repositorios + Mappers (COMPLETADO)
+- Creación de entidades JPA:
+  - `Category`
+  - `Product`
+- Definición de relaciones (`@ManyToOne` / `@OneToMany`).
+- Implementación de DTOs organizados por dominio:
+  - `CategoryResponse`
+  - `ProductRequest`
+  - `ProductResponse`
+  - `ProductFilter`
+- Creación de repositorios con Spring Data JPA:
   - `CategoryRepository`
   - `ProductRepository`
-- Validación del correcto bootstrap de Hibernate en H2.
+  - Método derivado `findByTitle(String title)`
+- Implementación manual de mappers:
+  - `CategoryMapper`
+  - `ProductMapper`
+- Configuración confirmada: Hibernate genera tablas correctamente en H2.
+- Ejecución de `./gradlew clean test` exitosa.
+- Merge del feature `base-domain` en `develop`.
 
 ---
 
@@ -53,8 +66,9 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 ### Lógica de negocio (Services)
 - Implementación de `CategoryService`.
 - Implementación de `ProductService`.
-- Manejo de excepciones de dominio.
-- Filtros y paginación interna en productos.
+- Manejo de excepciones custom (dominio + validaciones).
+- Filtros y paginación de productos.
+- Uso de mappers para respuestas limpias.
 
 ---
 
@@ -68,7 +82,8 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
   - `DELETE /product/{id}`
   - `GET /category`
 - Respuestas normalizadas mediante DTOs.
-- Códigos de estado correctos.
+- Manejo de errores centralizado.
+- Códigos de estado correctos (201, 400, 404, 409, etc).
 
 ---
 
@@ -77,38 +92,39 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 - Servicio para consumir:
   - `https://fakestoreapi.com/products/category/electronics`
 - Adaptación de datos externos al modelo interno.
-- Carga automática de categorías externas.
+- Carga automática o bajo demanda de categorías externas.
 
 ---
 
 ## [0.6.0] - *(pendiente)*
-###  Cache
-- Implementación de cache para listados de productos.
-- Cache selective invalidation al crear/editar/eliminar productos.
+### Cache
+- Implementación de cache para listados.
+- Invalidación selectiva al crear/editar/eliminar productos.
+- Configuración con `@Cacheable`, `@CacheEvict`, `@CachePut`.
 
 ---
 
 ## [0.7.0] - *(pendiente)*
 ### Documentación
-- Swagger / OpenAPI completamente operativo.
+- Swagger / OpenAPI totalmente operativo.
 - Ejemplos de requests/responses.
-- Documentación automática de modelos y endpoints.
+- Documentación automática de modelos DTO.
+- Descripciones y summary para cada endpoint.
 
 ---
 
 ## [0.8.0] - *(pendiente)*
 ### Tests Unitarios
 - Tests de controller usando `MockMvc`.
-- Tests de service (lógica pura + excepciones).
+- Tests de service (validaciones + excepciones + mappers).
 - Mock de repositorios con Mockito.
-- Cobertura mínima recomendada del 70%.
+- Cobertura mínima del 70%.
 
 ---
 
 ## [1.0.0] - *(pendiente)*
 ### Release estable
 - API completa, probada y documentada.
-- Listo para entrega final del desafío.
+- Lista para entrega final del desafío.
 
 ---
-
