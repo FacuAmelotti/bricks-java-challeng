@@ -123,6 +123,24 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 - Extensión de `ProductController` con endpoint:
   - `POST /product/import/electronics` para disparar la importación.
 
+## [0.5.1] - 2025-11-28
+### Hotfix — Correcciones en integración externa
+- Eliminación de ExternalProductController duplicado ubicado dentro de FakeStoreIntegrationService.java.
+- Corrección de imports rotos en:
+  - ProductController
+  - ExternalProductController
+  - FakeStoreIntegrationServiceImpl
+- Reparación del bean de integración:
+  - Ajuste de firma de método importElectronicsProducts().
+  - Eliminación de referencias antiguas (getElectronicsProducts).
+- Reubicación correcta de archivos en el paquete integration/.
+- Tests del proyecto vuelven a compilar (./gradlew clean test exitoso).
+- Importación externa funcionando correctamente desde:
+```bash
+POST /product/import/electronics
+```
+- Confirmada persistencia de productos externos en la base H2.
+
 
 ---
 

@@ -4,11 +4,16 @@ import com.bricks.challenge.dto.product.ProductResponse;
 
 import java.util.List;
 
+/**
+ * Define la integración con FakeStore.
+ * Separa el contrato (interfaz) de la implementación concreta.
+ */
 public interface FakeStoreIntegrationService {
 
     /**
      * Importa productos de la categoría "electronics" desde FakeStore,
-     * los adapta a nuestro dominio, los persiste y devuelve los ProductResponse resultantes.
+     * los adapta al dominio interno, los persiste y devuelve la lista
+     * resultante como ProductResponse.
      */
     List<ProductResponse> importElectronicsProducts();
 }
