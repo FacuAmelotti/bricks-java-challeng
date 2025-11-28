@@ -39,9 +39,9 @@ public class FakeStoreIntegrationServiceImpl implements FakeStoreIntegrationServ
         this.productMapper = productMapper;
     }
 
-    @Override
-    @Cacheable(value = "externalElectronics", key = "'import'")
-    public List<ProductResponse> importElectronicsProducts() {
+@CacheEvict(value = "products", key = "'all'")
+@Override
+public List<ProductResponse> importElectronicsProducts() {
         
         FakeStoreProductDto[] externalProducts =
                 restTemplate.getForObject(ELECTRONICS_URL, FakeStoreProductDto[].class);

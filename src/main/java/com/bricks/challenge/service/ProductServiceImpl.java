@@ -36,19 +36,24 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     @Cacheable(value = "products", key = "'all'")
     public List<ProductResponse> findAll(ProductFilter filter) {
+        System.out.println(">>> [CACHE TEST] Ejecutando findAll() en ProductServiceImpl (SIN usar caché)");
+
+        // 1) Detectar si el filtro está vacío (sin parámetros útiles)
+        boolean filtroVacio = (filter == null)
+                || (filter.getMinPrice() == null
+                && filter.getMaxPrice() == null
+                && filter.getCategoryId() == null);
+
         List<Product> products;
 
-        if (filter == null) {
+        if (filtroVacio) {
+            // Caso común: GET /api/products sin filtros → traemos todo
             products = productRepository.findAll();
         } else {
-            // Filtro básico: por rango de precio y/o categoría
             BigDecimal minPrice = filter.getMinPrice();
             BigDecimal maxPrice = filter.getMaxPrice();
             Long categoryId = filter.getCategoryId();
 
-            // Por simplicidad para el challenge: si hay filtros,
-            // ahora mismo usamos findAll() y luego filtramos en memoria.
-            // En una versión más avanzada se podría crear queries específicas.
             products = productRepository.findAll().stream()
                     .filter(p -> {
                         boolean ok = true;
@@ -72,6 +77,8 @@ public class ProductServiceImpl implements ProductService {
                 .map(productMapper::toResponse)
                 .toList();
     }
+
+
 
     @Override
     @Transactional(readOnly = true)
