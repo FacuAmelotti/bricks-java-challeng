@@ -1,4 +1,4 @@
-# Desafío Técnico – Bricks 🧱  
+# Desafío Técnico – Bricks  
 API REST de Productos y Categorías (Java / Spring Boot)
 
 Este proyecto implementa una **API REST** para la administración de productos de un comercio, como parte del **desafío técnico de Bricks**.  
@@ -6,7 +6,7 @@ Permite gestionar productos y categorías, aplicar filtros y paginación, docume
 
 ---
 
-## 🧰 Stack Tecnológico
+## Stack Tecnológico
 
 - **Java 17**
 - **Spring Boot** (Web, Validation)
@@ -19,7 +19,7 @@ Permite gestionar productos y categorías, aplicar filtros y paginación, docume
 
 ---
 
-## 🎯 Objetivo del Sistema
+## Objetivo del Sistema
 
 La API permite:
 
@@ -43,7 +43,7 @@ La API permite:
 
 ---
 
-## 🚀 Cómo ejecutar el proyecto
+## Cómo ejecutar el proyecto
 
 ### Requisitos
 
