@@ -8,6 +8,9 @@ import com.bricks.challenge.repository.CategoryRepository;
 import com.bricks.challenge.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,8 +39,10 @@ public class FakeStoreIntegrationServiceImpl implements FakeStoreIntegrationServ
         this.productMapper = productMapper;
     }
 
-    @Override
-    public List<ProductResponse> importElectronicsProducts() {
+@CacheEvict(value = "products", key = "'all'")
+@Override
+public List<ProductResponse> importElectronicsProducts() {
+        
         FakeStoreProductDto[] externalProducts =
                 restTemplate.getForObject(ELECTRONICS_URL, FakeStoreProductDto[].class);
 

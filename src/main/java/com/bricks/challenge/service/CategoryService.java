@@ -14,5 +14,5 @@ public interface CategoryService {
     /**
      * Devuelve la entidad Category para uso interno en otros servicios.
      */
-    Category getCategoryEntityById(Long id);
+    Category getEntityById(Long id);
 }
