@@ -111,12 +111,18 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 
 ---
 
-## [0.5.0] - *(pendiente)*
-### Integración externa
-- Servicio para consumir:
-  - `https://fakestoreapi.com/products/category/electronics`
-- Adaptación de datos externos al modelo interno.
-- Carga automática o bajo demanda de categorías externas.
+## [0.5.0] - 2025-11-28
+### Integración externa (FakeStore API)
+- Creación de DTO externo `FakeStoreProductDto` para modelar la respuesta de FakeStore.
+- Configuración de `RestTemplate` como cliente HTTP para llamadas HTTP salientes.
+- Implementación de `FakeStoreIntegrationService`:
+  - Llamada a `https://fakestoreapi.com/products/category/electronics`.
+  - Adaptación de cada producto externo al modelo interno `Product`.
+  - Resolución/creación de categorías internas en base al campo `category`.
+  - Persistencia de productos en la base H2.
+- Extensión de `ProductController` con endpoint:
+  - `POST /product/import/electronics` para disparar la importación.
+
 
 ---
 
