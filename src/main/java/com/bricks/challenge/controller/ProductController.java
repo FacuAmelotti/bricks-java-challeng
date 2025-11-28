@@ -3,6 +3,7 @@ package com.bricks.challenge.controller;
 import com.bricks.challenge.dto.product.ProductFilter;
 import com.bricks.challenge.dto.product.ProductRequest;
 import com.bricks.challenge.dto.product.ProductResponse;
+import com.bricks.challenge.integration.FakeStoreIntegrationService;
 import com.bricks.challenge.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final FakeStoreIntegrationService fakeStoreIntegrationService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService,
+                             FakeStoreIntegrationService fakeStoreIntegrationService) {
         this.productService = productService;
+        this.fakeStoreIntegrationService = fakeStoreIntegrationService;
     }
 
     @PostMapping
@@ -49,5 +53,12 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // 🚀 Nuevo endpoint para importar electronics desde FakeStore
+    @PostMapping("/import/electronics")
+    public ResponseEntity<List<ProductResponse>> importElectronics() {
+        List<ProductResponse> imported = fakeStoreIntegrationService.importElectronicsProducts();
+        return ResponseEntity.status(HttpStatus.CREATED).body(imported);
     }
 }
