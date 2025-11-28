@@ -62,28 +62,52 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 
 ---
 
-## [0.3.0] - *(pendiente)*
-### Lógica de negocio (Services)
-- Implementación de `CategoryService`.
-- Implementación de `ProductService`.
-- Manejo de excepciones custom (dominio + validaciones).
-- Filtros y paginación de productos.
-- Uso de mappers para respuestas limpias.
+## [0.3.0] - 2025-11-28  
+### Lógica de negocio (Services) — COMPLETADO
+- Creación de la capa de servicios con separación por dominio:
+  - `CategoryService` + `CategoryServiceImpl`
+  - `ProductService` + `ProductServiceImpl`
+- Integración con repositorios (`CategoryRepository`, `ProductRepository`).
+- Uso de mappers para transformar entidades ↔ DTOs:
+  - `CategoryMapper`
+  - `ProductMapper`
+- Validaciones internas:
+  - Verificación de existencia de categoría al crear/actualizar productos.
+  - Manejo de productos inexistentes mediante `ResourceNotFoundException`.
+- Operaciones CRUD completas en productos:
+  - Crear, listar, buscar por ID, actualizar, eliminar.
+- Servicios de categoría:
+  - Obtener todas
+  - Obtener por ID
+  - Obtener entidad interna para otros services.
+- Ejecución de `./gradlew clean test` exitosa.
+- Merge del feature `services` en `develop`.
 
 ---
 
-## [0.4.0] - *(pendiente)*
-### API REST (Controllers)
-- Implementación de endpoints:
+## [0.4.0] - 2025-11-28  
+### API REST (Controllers) — COMPLETADO
+- Creación de la capa de controladores para exponer la API REST.
+- Implementación de endpoints para productos:
+  - `POST /product` (201 CREATED)
   - `GET /product`
   - `GET /product/{id}`
-  - `POST /product`
   - `PUT /product/{id}`
-  - `DELETE /product/{id}`
+  - `DELETE /product/{id}` (204 NO CONTENT)
+- Implementación de endpoints para categorías:
   - `GET /category`
-- Respuestas normalizadas mediante DTOs.
-- Manejo de errores centralizado.
-- Códigos de estado correctos (201, 400, 404, 409, etc).
+  - `GET /category/{id}`
+- Uso de DTOs para request/response:
+  - `ProductRequest`, `ProductResponse`, `ProductFilter`
+  - `CategoryResponse`
+- Validación automática con `@Valid` para inputs.
+- Manejo de errores unificado mediante `GlobalExceptionHandler`:
+  - Validaciones (`MethodArgumentNotValidException`)
+  - Recursos no encontrados (`ResourceNotFoundException`)
+  - Errores inesperados (500)
+- Arquitectura consistente con buenas prácticas de Spring Boot.
+- Ejecución correcta de `./gradlew clean test`.
+- Merge del feature `controllers` en `develop`.
 
 ---
 
