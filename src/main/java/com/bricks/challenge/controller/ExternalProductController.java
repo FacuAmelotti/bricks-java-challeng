@@ -4,12 +4,19 @@ import com.bricks.challenge.dto.product.ProductResponse;
 import com.bricks.challenge.integration.FakeStoreIntegrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
+@Tag(
+        name = "External Products",
+        description = "Integración con FakeStore API para importar productos externos"
+)
 @RestController
 @RequestMapping("/api/external/products")
 public class ExternalProductController {
@@ -20,7 +27,14 @@ public class ExternalProductController {
         this.fakeStoreIntegrationService = fakeStoreIntegrationService;
     }
 
-    // GET /api/external/products/electronics
+    @Operation(
+            summary = "Importar productos electrónicos desde FakeStore",
+            description = "Consume la API pública FakeStore, adapta los datos al modelo interno y persiste los productos en la base H2."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Productos importados y persistidos correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error al consumir FakeStore o al persistir los datos")
+    })
     @GetMapping("/electronics")
     public ResponseEntity<List<ProductResponse>> importElectronicsProducts() {
         List<ProductResponse> imported = fakeStoreIntegrationService.importElectronicsProducts();

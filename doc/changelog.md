@@ -164,12 +164,29 @@ POST /product/import/electronics
 - !!! Revisar cache con postman
 ---
 
-## [0.7.0] - *(pendiente)*
-### Documentación
-- Swagger / OpenAPI totalmente operativo.
-- Ejemplos de requests/responses.
-- Documentación automática de modelos DTO.
-- Descripciones y summary para cada endpoint.
+## [0.7.0] - 2025-11-28  
+### Documentación (Swagger / OpenAPI) 
+- Activación completa de documentación automática mediante **springdoc-openapi**.
+- Configuración del endpoint principal:
+  - `GET /swagger-ui/index.html` → interfaz visual interactiva.
+  - `GET /v3/api-docs` → especificación OpenAPI en formato JSON.
+- Anotación de controladores con:
+  - `@Tag` para agrupar endpoints dentro de Swagger.
+  - `summary` y `description` detallados por cada operación.
+- Documentación generada automáticamente para:
+  - Operaciones CRUD de productos.
+  - Consultas internas de categorías.
+  - Integración externa con FakeStore.
+- Generación automática de *schemas* OpenAPI para los DTO:
+  - `ProductRequest`, `ProductResponse`, `ProductFilter`.
+  - `CategoryResponse`.
+- Ajustes en `ExternalProductController` para incluir descripciones del proceso de importación.
+- Verificación manual realizada:
+  - Todas las rutas visibles y funcionales desde Swagger UI.
+  - Schemas consistentes con las estructuras reales del proyecto.
+  - Respuestas HTTP correctamente documentadas.
+- Proyecto continúa compilando sin errores (`./gradlew clean test` OK).
+- Lista para merge hacia `develop`.
 
 ---
 
