@@ -4,39 +4,21 @@ import java.math.BigDecimal;
 
 public class ProductFilter {
 
-    private String name;
+    // Filtros existentes
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
-    private Integer minStock;
-    private Integer maxStock;
     private Long categoryId;
 
-    public ProductFilter() {
-    }
+    // NUEVOS filtros según enunciado
+    private String name;        // filtro por nombre (contiene)
+    private Integer minStock;   // stock mínimo
+    private Integer maxStock;   // stock máximo
 
-    public ProductFilter(String name,
-                         BigDecimal minPrice,
-                         BigDecimal maxPrice,
-                         Integer minStock,
-                         Integer maxStock,
-                         Long categoryId) {
-        this.name = name;
-        this.minPrice = minPrice;
-        this.maxPrice = maxPrice;
-        this.minStock = minStock;
-        this.maxStock = maxStock;
-        this.categoryId = categoryId;
-    }
+    // Paginación
+    private Integer page;       // número de página (0-based)
+    private Integer size;       // tamaño de página
 
     // Getters y Setters
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public BigDecimal getMinPrice() {
         return minPrice;
@@ -52,6 +34,22 @@ public class ProductFilter {
 
     public void setMaxPrice(BigDecimal maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getMinStock() {
@@ -70,11 +68,19 @@ public class ProductFilter {
         this.maxStock = maxStock;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public Integer getPage() {
+        return page;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 }

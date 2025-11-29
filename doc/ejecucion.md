@@ -111,6 +111,6 @@ Deberías ver:
 6.  Categorías
 
 
-### Opcional:
+### Extra:
 - Swagger UI:  http://localhost:8080/swagger-ui/index.html
 - Consola H2:  http://localhost:8080/h2-console  (JDBC URL: jdbc:h2:mem:bricksdb)

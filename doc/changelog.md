@@ -89,11 +89,11 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 ### API REST (Controllers) — COMPLETADO
 - Creación de la capa de controladores para exponer la API REST.
 - Implementación de endpoints para productos:
-  - `POST /product` (201 CREATED)
-  - `GET /product`
-  - `GET /product/{id}`
-  - `PUT /product/{id}`
-  - `DELETE /product/{id}` (204 NO CONTENT)
+  - `GET /api/products`
+  - `GET /api/products/{id}`
+  - `POST /api/products`
+  - `PUT /api/products/{id}`
+  - `DELETE /api/products/{id}` (204 NO CONTENT)
 - Implementación de endpoints para categorías:
   - `GET /category`
   - `GET /category/{id}`
@@ -121,7 +121,7 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
   - Resolución/creación de categorías internas en base al campo `category`.
   - Persistencia de productos en la base H2.
 - Extensión de `ProductController` con endpoint:
-  - `POST /product/import/electronics` para disparar la importación.
+  - `GET /api/external/products/electronics` para disparar la importación.
 
 ## [0.5.1] - 2025-11-28
 ### Hotfix — Correcciones en integración externa
@@ -137,7 +137,7 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 - Tests del proyecto vuelven a compilar (./gradlew clean test exitoso).
 - Importación externa funcionando correctamente desde:
 ```bash
-POST /product/import/electronics
+GET /api/external/products/electronics
 ```
 - Confirmada persistencia de productos externos en la base H2.
 
@@ -238,9 +238,25 @@ POST /product/import/electronics
 
 ---
 
-## [1.0.0] - *(pendiente)*
-### Release estable
-- API completa, probada y documentada.
-- Lista para entrega final del desafío.
+## [1.0.0] - 2025-11-29
+### Release estable – Versión lista para evaluación
+
+- API REST de productos y categorías completamente funcional.
+- Integración externa con FakeStore operativa mediante:
+  - `GET /api/external/products/electronics`
+- Cache configurado y verificado en:
+  - `GET /api/products` con invalidación automática en operaciones de escritura.
+- Suite de tests unitarios ejecutándose correctamente (`./gradlew clean test`):
+  - Servicios (`ProductServiceImplTest`, `CategoryServiceImplTest`)
+  - Controladores (`ProductControllerTest`, `CategoryControllerTest`)
+  - Mappers (`ProductMapperTest`, `CategoryMapperTest`)
+- Documentación disponible para el evaluador:
+  - `README.md` con instrucciones de deploy y ejecución.
+  - `doc/ejecucion.md` con flujo sugerido de pruebas.
+  - `doc/endpoints.md` con listado de rutas principales.
+- Build final generable mediante:
+  - `./gradlew clean build` → `build/libs/bricks-java-challenge-0.0.1-SNAPSHOT.jar`
+- Proyecto considerado estable y listo para revisión en el contexto del desafío técnico de Bricks.
+
 
 ---

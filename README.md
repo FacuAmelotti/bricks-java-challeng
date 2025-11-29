@@ -141,6 +141,13 @@ http://localhost:8080/h2-console
 | DELETE | `/api/products/{id}`                 | Eliminar un producto                      |
 | GET    | `/api/external/products/electronics` | Importar productos desde FakeStore        |
 
+### Filtros disponibles en `/api/products`
+- `name` (contiene, case-insensitive)
+- `minPrice` / `maxPrice`
+- `minStock` / `maxStock`
+- `categoryId`
+- `page` / `size` (paginación en memoria)
+
 
 ### Categorías
 | Método | Endpoint         | Descripción       |
