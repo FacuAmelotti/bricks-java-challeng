@@ -1,0 +1,74 @@
+# ------------------------------------------
+# Java / Spring Boot / Gradle - PRO Version
+# ------------------------------------------
+
+# === Java build ===
+*.class
+*.war
+*.ear
+*.jar
+*.jmod
+
+# === Logs ===
+*.log
+*.out
+*.err
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Editor / IDE ===
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# === Gradle ===
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+build/
+
+# === Spring Boot ===
+target/
+out/
+
+# === Tests ===
+# Reports generados por JUnit, Gradle y Surefire
+build/reports/
+build/test-results/
+
+# === Application specific ===
+# Archivos temporales
+*.tmp
+*.temp
+
+# === OS Junk ===
+Ehthumbs.db
+Icon?
+desktop.ini
+
+# === Java security ===
+*.keystore
+*.pem
+*.p12
+*.jks
+
+# === Backup files ===
+*.bak
+*.backup
+*.orig
+*.old
+
+# === Local environment / config ===
+*.env
+.env.*
