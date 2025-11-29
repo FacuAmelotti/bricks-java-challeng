@@ -190,12 +190,51 @@ POST /product/import/electronics
 
 ---
 
-## [0.8.0] - *(pendiente)*
-### Tests Unitarios
-- Tests de controller usando `MockMvc`.
-- Tests de service (validaciones + excepciones + mappers).
-- Mock de repositorios con Mockito.
-- Cobertura mínima del 70%.
+## [0.8.0] - 2025-11-28
+### Tests Unitarios (Services + Controllers + Mappers)
+
+- **Capa de servicios (unit tests con JUnit 5 + Mockito)**
+  - `ProductServiceImplTest`:
+    - Cobertura completa de `findAll` (con y sin filtros), `findById`, `create`, `update` y `delete`.
+    - Mock de `ProductRepository`, `CategoryService` y `ProductMapper`.
+    - Verificación de:
+      - Uso correcto de los repositorios.
+      - Resolución de categorías internas.
+      - Mapeo correcto entre entidades (Product) y DTOs (ProductResponse / ProductRequest).
+      - Lanzamiento de ResourceNotFoundException cuando el recurso no existe.
+  - `CategoryServiceImplTest`:
+    - Cobertura completa de `findAll`, `findById` y `getEntityById`.
+    - Mock de `CategoryRepository` y `CategoryMapper`.
+    - Verificación de:
+      - Mapeos internos correctos.
+      - Manejo de ResourceNotFoundException cuando corresponde.
+
+- **Capa web (tests de controlador con MockMvc en modo standalone)**
+  - `ProductControllerTest`:
+    - `GET /api/products` → 200 OK, retorna listado JSON.
+    - `GET /api/products/{id}` → 200 OK (éxito) / 404 Not Found (recurso inexistente).
+    - `POST /api/products` → 201 Created con body válido; 400 Bad Request cuando falla la validación (@Valid).
+    - `PUT /api/products/{id}` → 200 OK al actualizar; 404 Not Found si el producto no existe.
+    - `DELETE /api/products/{id}` → 204 No Content al eliminar; 404 Not Found cuando el service lanza ResourceNotFoundException.
+    - Uso de GlobalExceptionHandler para mapear excepciones a códigos HTTP adecuados.
+  - `CategoryControllerTest`:
+    - `GET /api/categories` → 200 OK, listado JSON de categorías.
+    - `GET /api/categories/{id}` → 200 OK (éxito) / 404 Not Found.
+    - Verificación del uso correcto del service, integración con GlobalExceptionHandler y estructura JSON esperada.
+
+- **Tests de mappers (unit tests puros)**
+  - `ProductMapperTest`:
+    - Verifica `toEntity` y `toDto`.
+    - Validación de name, price, stock y relación con categoría.
+  - `CategoryMapperTest`:
+    - Verifica `toEntity` y `toDto`.
+    - Validación del mapeo correcto de id y title.
+
+- **Estado del proyecto**
+  - Suite de tests ejecutándose correctamente con `./gradlew clean test`.
+  - Cobertura sobre servicios, controladores y mapeadores.
+  - Base estable y completamente probada para la entrega del challenge.
+
 
 ---
 

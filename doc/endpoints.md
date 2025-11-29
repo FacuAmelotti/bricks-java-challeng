@@ -1,17 +1,24 @@
 # ENDPOINTS – Bricks Java Challenge
 
-Documentación de los endpoints actuales de la API.
+Base URL: `http://localhost:8080`
 
 ---
-GET     http://localhost:8080//api/products
-GET     http://localhost:8080//api/products/{id}
 
-POST    http://localhost:8080//api/products
+## Productos
 
-PUT     http://localhost:8080//api/products/{id}
-DELETE  http://localhost:8080//api/products/{id}
+GET     /api/products  
+GET     /api/products/{id}  
 
-GET     http://localhost:8080//category
-GET     http://localhost:8080//category/{id}
+POST    /api/products  
+PUT     /api/products/{id}  
+DELETE  /api/products/{id}  
 
-GET     http://localhost:8080//api/external/products/electronics
+# Importación desde FakeStore
+GET     /api/external/products/electronics
+
+---
+
+## Categorías
+
+GET     /category  
+GET     /category/{id}

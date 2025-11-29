@@ -33,7 +33,7 @@ Deberías ver:
 
 ------------------------------------------------------------------------
 
-# **3. Importar productos externos (OBLIGATORIO)**
+# **3. Importar productos externos (recomendado para probar la API con datos reales)**
 
     GET http://localhost:8080/api/external/products/electronics
 
@@ -111,3 +111,6 @@ Deberías ver:
 6.  Categorías
 
 
+### Opcional:
+- Swagger UI:  http://localhost:8080/swagger-ui/index.html
+- Consola H2:  http://localhost:8080/h2-console  (JDBC URL: jdbc:h2:mem:bricksdb)
