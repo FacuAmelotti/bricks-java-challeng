@@ -12,9 +12,9 @@ Este cronograma detalla la planificación modular del desarrollo, siguiendo una 
 | Controllers + Excepciones     | 10%              | ✔️ Completado |
 | Integración externa FakeStore | 10%              | ✔️ Completado |
 | Cache                         | 10%              | ✔️ Completado |
-| Swagger / OpenAPI             | 5%               | ⏳ Pendiente |
-| Tests unitarios               | 20%              | ⏳ Pendiente |
-| Documentación final           | 5%               | ⏳ Pendiente |
+| Swagger / OpenAPI             | 5%               | ✔️ Completado |
+| Tests unitarios               | 20%              | ✔️ Completado |
+| Documentación final           | 5%               | ✔️ Completado |
 
 ## 🗂 Fases del Desarrollo
 
@@ -58,20 +58,20 @@ Este cronograma detalla la planificación modular del desarrollo, siguiendo una 
 - `@Cacheable`, `@CacheEvict`, `@CachePut`  
 - Revisión de impacto en performance
 
-### ⏳ Fase 7 — Swagger / OpenAPI (0.7.0)
+### ✔️ Fase 7 — Swagger / OpenAPI (0.7.0)
 - Configuración de Springdoc  
 - Modelos documentados  
 - Ejemplos y summaries  
 - Test visual con Swagger UI
 
-### ⏳ Fase 8 — Tests Unitarios (0.8.0)
+### ✔️ Fase 8 — Tests Unitarios (0.8.0)
 - JUnit + Mockito  
 - Mock de repositorios  
 - MockMvc para controllers  
 - Cobertura mínima del 70%  
 - Tests de servicios, mappers, excepciones
 
-### ⏳ Fase 9 — Documentación Final (1.0.0)
+### ✔️ Fase 9 — Documentación Final (1.0.0)
 - README completo  
 - Changelog final  
 - Este cronograma  

@@ -32,51 +32,120 @@ public class ProductServiceImpl implements ProductService {
         this.productMapper = productMapper;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    @Cacheable(value = "products", key = "'all'")
-    public List<ProductResponse> findAll(ProductFilter filter) {
-        System.out.println(">>> [CACHE TEST] Ejecutando findAll() en ProductServiceImpl (SIN usar caché)");
+@Override
+@Transactional(readOnly = true)
+@Cacheable(
+        value = "products",
+        key = "'all'",
+        // Solo cacheamos cuando NO hay filtros ni paginación
+        condition = "#filter == null || " +
+                "(#filter.name == null && #filter.minPrice == null && #filter.maxPrice == null && " +
+                "#filter.categoryId == null && #filter.minStock == null && #filter.maxStock == null && " +
+                "#filter.page == null && #filter.size == null)"
+)
+public List<ProductResponse> findAll(ProductFilter filter) {
+    System.out.println(">>> [CACHE TEST] Ejecutando findAll() en ProductServiceImpl (SIN usar caché)");
 
-        // 1) Detectar si el filtro está vacío (sin parámetros útiles)
-        boolean filtroVacio = (filter == null)
-                || (filter.getMinPrice() == null
-                && filter.getMaxPrice() == null
-                && filter.getCategoryId() == null);
+    // Detectar si no hay filtros "reales"
+    boolean filtroVacio = (filter == null)
+            || (filter.getName() == null
+            && filter.getMinPrice() == null
+            && filter.getMaxPrice() == null
+            && filter.getCategoryId() == null
+            && filter.getMinStock() == null
+            && filter.getMaxStock() == null
+            && filter.getPage() == null
+            && filter.getSize() == null);
 
-        List<Product> products;
+    // Siempre traemos de la base y después filtramos en memoria (para el challenge va sobrado)
+    List<Product> source = productRepository.findAll();
 
-        if (filtroVacio) {
-            // Caso común: GET /api/products sin filtros → traemos todo
-            products = productRepository.findAll();
-        } else {
-            BigDecimal minPrice = filter.getMinPrice();
-            BigDecimal maxPrice = filter.getMaxPrice();
-            Long categoryId = filter.getCategoryId();
+    List<Product> filtrados;
 
-            products = productRepository.findAll().stream()
-                    .filter(p -> {
-                        boolean ok = true;
+    if (filtroVacio) {
+        // Sin filtros → devolvemos todo (y este caso se cachea)
+        filtrados = source;
+    } else {
+        String name = filter.getName();
+        BigDecimal minPrice = filter.getMinPrice();
+        BigDecimal maxPrice = filter.getMaxPrice();
+        Long categoryId = filter.getCategoryId();
+        Integer minStock = filter.getMinStock();
+        Integer maxStock = filter.getMaxStock();
 
-                        if (minPrice != null) {
-                            ok = ok && p.getPrice().compareTo(minPrice) >= 0;
-                        }
-                        if (maxPrice != null) {
-                            ok = ok && p.getPrice().compareTo(maxPrice) <= 0;
-                        }
-                        if (categoryId != null && p.getCategory() != null) {
-                            ok = ok && categoryId.equals(p.getCategory().getId());
-                        }
+        filtrados = source.stream()
+                .filter(p -> {
+                    boolean ok = true;
 
-                        return ok;
-                    })
-                    .toList();
-        }
+                    // Name contiene (case-insensitive)
+                    if (name != null && !name.isBlank()) {
+                        ok = ok
+                                && p.getName() != null
+                                && p.getName().toLowerCase().contains(name.toLowerCase());
+                    }
 
-        return products.stream()
-                .map(productMapper::toResponse)
+                    // Precio mínimo
+                    if (minPrice != null) {
+                        ok = ok && p.getPrice() != null
+                                && p.getPrice().compareTo(minPrice) >= 0;
+                    }
+
+                    // Precio máximo
+                    if (maxPrice != null) {
+                        ok = ok && p.getPrice() != null
+                                && p.getPrice().compareTo(maxPrice) <= 0;
+                    }
+
+                    // Categoría
+                    if (categoryId != null) {
+                        ok = ok && p.getCategory() != null
+                                && categoryId.equals(p.getCategory().getId());
+                    }
+
+                    // Stock mínimo
+                    if (minStock != null) {
+                        ok = ok && p.getStock() != null
+                                && p.getStock() >= minStock;
+                    }
+
+                    // Stock máximo
+                    if (maxStock != null) {
+                        ok = ok && p.getStock() != null
+                                && p.getStock() <= maxStock;
+                    }
+
+                    return ok;
+                })
                 .toList();
     }
+
+    // ===== Paginación en memoria =====
+    int page = 0;
+    int size = filtrados.size(); // si no se especifica, devolvemos todo
+
+    if (filter != null) {
+        if (filter.getPage() != null) {
+            page = Math.max(0, filter.getPage());
+        }
+        if (filter.getSize() != null) {
+            size = Math.max(1, filter.getSize());
+        }
+    }
+
+    int fromIndex = page * size;
+    if (fromIndex >= filtrados.size()) {
+        // Página fuera de rango → lista vacía
+        return List.of();
+    }
+
+    int toIndex = Math.min(fromIndex + size, filtrados.size());
+
+    return filtrados.subList(fromIndex, toIndex)
+            .stream()
+            .map(productMapper::toResponse)
+            .toList();
+}
+
 
 
 

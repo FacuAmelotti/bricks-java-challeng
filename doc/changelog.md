@@ -89,11 +89,11 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 ### API REST (Controllers) — COMPLETADO
 - Creación de la capa de controladores para exponer la API REST.
 - Implementación de endpoints para productos:
-  - `POST /product` (201 CREATED)
-  - `GET /product`
-  - `GET /product/{id}`
-  - `PUT /product/{id}`
-  - `DELETE /product/{id}` (204 NO CONTENT)
+  - `GET /api/products`
+  - `GET /api/products/{id}`
+  - `POST /api/products`
+  - `PUT /api/products/{id}`
+  - `DELETE /api/products/{id}` (204 NO CONTENT)
 - Implementación de endpoints para categorías:
   - `GET /category`
   - `GET /category/{id}`
@@ -121,7 +121,7 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
   - Resolución/creación de categorías internas en base al campo `category`.
   - Persistencia de productos en la base H2.
 - Extensión de `ProductController` con endpoint:
-  - `POST /product/import/electronics` para disparar la importación.
+  - `GET /api/external/products/electronics` para disparar la importación.
 
 ## [0.5.1] - 2025-11-28
 ### Hotfix — Correcciones en integración externa
@@ -137,7 +137,7 @@ Formato basado en [Semantic Versioning](https://semver.org/) y buenas prácticas
 - Tests del proyecto vuelven a compilar (./gradlew clean test exitoso).
 - Importación externa funcionando correctamente desde:
 ```bash
-POST /product/import/electronics
+GET /api/external/products/electronics
 ```
 - Confirmada persistencia de productos externos en la base H2.
 
@@ -190,18 +190,73 @@ POST /product/import/electronics
 
 ---
 
-## [0.8.0] - *(pendiente)*
-### Tests Unitarios
-- Tests de controller usando `MockMvc`.
-- Tests de service (validaciones + excepciones + mappers).
-- Mock de repositorios con Mockito.
-- Cobertura mínima del 70%.
+## [0.8.0] - 2025-11-28
+### Tests Unitarios (Services + Controllers + Mappers)
+
+- **Capa de servicios (unit tests con JUnit 5 + Mockito)**
+  - `ProductServiceImplTest`:
+    - Cobertura completa de `findAll` (con y sin filtros), `findById`, `create`, `update` y `delete`.
+    - Mock de `ProductRepository`, `CategoryService` y `ProductMapper`.
+    - Verificación de:
+      - Uso correcto de los repositorios.
+      - Resolución de categorías internas.
+      - Mapeo correcto entre entidades (Product) y DTOs (ProductResponse / ProductRequest).
+      - Lanzamiento de ResourceNotFoundException cuando el recurso no existe.
+  - `CategoryServiceImplTest`:
+    - Cobertura completa de `findAll`, `findById` y `getEntityById`.
+    - Mock de `CategoryRepository` y `CategoryMapper`.
+    - Verificación de:
+      - Mapeos internos correctos.
+      - Manejo de ResourceNotFoundException cuando corresponde.
+
+- **Capa web (tests de controlador con MockMvc en modo standalone)**
+  - `ProductControllerTest`:
+    - `GET /api/products` → 200 OK, retorna listado JSON.
+    - `GET /api/products/{id}` → 200 OK (éxito) / 404 Not Found (recurso inexistente).
+    - `POST /api/products` → 201 Created con body válido; 400 Bad Request cuando falla la validación (@Valid).
+    - `PUT /api/products/{id}` → 200 OK al actualizar; 404 Not Found si el producto no existe.
+    - `DELETE /api/products/{id}` → 204 No Content al eliminar; 404 Not Found cuando el service lanza ResourceNotFoundException.
+    - Uso de GlobalExceptionHandler para mapear excepciones a códigos HTTP adecuados.
+  - `CategoryControllerTest`:
+    - `GET /api/categories` → 200 OK, listado JSON de categorías.
+    - `GET /api/categories/{id}` → 200 OK (éxito) / 404 Not Found.
+    - Verificación del uso correcto del service, integración con GlobalExceptionHandler y estructura JSON esperada.
+
+- **Tests de mappers (unit tests puros)**
+  - `ProductMapperTest`:
+    - Verifica `toEntity` y `toDto`.
+    - Validación de name, price, stock y relación con categoría.
+  - `CategoryMapperTest`:
+    - Verifica `toEntity` y `toDto`.
+    - Validación del mapeo correcto de id y title.
+
+- **Estado del proyecto**
+  - Suite de tests ejecutándose correctamente con `./gradlew clean test`.
+  - Cobertura sobre servicios, controladores y mapeadores.
+  - Base estable y completamente probada para la entrega del challenge.
+
 
 ---
 
-## [1.0.0] - *(pendiente)*
-### Release estable
-- API completa, probada y documentada.
-- Lista para entrega final del desafío.
+## [1.0.0] - 2025-11-29
+### Release estable – Versión lista para evaluación
+
+- API REST de productos y categorías completamente funcional.
+- Integración externa con FakeStore operativa mediante:
+  - `GET /api/external/products/electronics`
+- Cache configurado y verificado en:
+  - `GET /api/products` con invalidación automática en operaciones de escritura.
+- Suite de tests unitarios ejecutándose correctamente (`./gradlew clean test`):
+  - Servicios (`ProductServiceImplTest`, `CategoryServiceImplTest`)
+  - Controladores (`ProductControllerTest`, `CategoryControllerTest`)
+  - Mappers (`ProductMapperTest`, `CategoryMapperTest`)
+- Documentación disponible para el evaluador:
+  - `README.md` con instrucciones de deploy y ejecución.
+  - `doc/ejecucion.md` con flujo sugerido de pruebas.
+  - `doc/endpoints.md` con listado de rutas principales.
+- Build final generable mediante:
+  - `./gradlew clean build` → `build/libs/bricks-java-challenge-0.0.1-SNAPSHOT.jar`
+- Proyecto considerado estable y listo para revisión en el contexto del desafío técnico de Bricks.
+
 
 ---

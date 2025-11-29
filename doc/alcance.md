@@ -120,8 +120,8 @@ Nada de:
 ### ❌ No se crean tests de integración completos
 Solo unitarios.
 
-### ❌ No se hace importación dinámica continua de datos externos
-Solo se consume el endpoint de categorías.
+### ❌ No se hace importación dinámica continua de datos externos.
+Solo se consume el endpoint de productos electrónicos de FakeStore para poblar datos de prueba.
 
 ---
 
